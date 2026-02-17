@@ -1,7 +1,7 @@
 // ══════════════════════════════════════
-//  종전 후 피어난 개망초 · App.tsx
+//  종전 후 — World Wiki · App.tsx
 // ══════════════════════════════════════
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './style.css'
 
 // ── 데이터 타입 ──────────────────────
@@ -41,7 +41,7 @@ interface ThemeBlock {
 }
 
 // ── 상수 데이터 ──────────────────────
-const CHARACTERS: Character[] = [
+const getCharacters = (userName: string): Character[] => [
   {
     faction: 'Imperial Empire · 황녀',
     factionClass: 'empire',
@@ -58,7 +58,7 @@ const CHARACTERS: Character[] = [
   {
     faction: 'Gradonia · 전쟁 영웅',
     factionClass: 'grad',
-    nameEn: '{user}',
+    nameEn: userName,
     nameKo: '그라도니아의 전쟁 영웅',
     desc: '패전국 그라도니아의 전설적인 전쟁 영웅. 이름만으로도 제국 병사들이 몸서리쳤던 인물이지만, 전쟁의 끝에서 선택할 수 있는 것은 없었다. 조국의 생존을 위해 정략혼을 받아들인 그에게, 황궁은 새로운 전쟁터나 다름없다. 증오하는 자의 집 안에서, 그는 무엇을 지키고 무엇을 버려야 할까.',
     stats: [
@@ -71,7 +71,7 @@ const CHARACTERS: Character[] = [
   },
 ]
 
-const WORLD_CARDS: WorldCard[] = [
+const getWorldCards = (userName: string): WorldCard[] => [
   {
     num: 'I',
     icon: '⚜️',
@@ -82,7 +82,7 @@ const WORLD_CARDS: WorldCard[] = [
     num: 'II',
     icon: '🗡️',
     title: '그라도니아 왕국',
-    body: '한때 제국에 맞설 만한 군사력을 자랑했으나 전쟁에서 패배, 국토의 일부를 잃었다. {user}는 왕국의 마지막 희망으로 정략혼이라는 굴욕을 받아들였다. 민중은 영웅의 선택에 눈물을 흘렸다.',
+    body: `한때 제국에 맞설 만한 군사력을 자랑했으나 전쟁에서 패배, 국토의 일부를 잃었다. ${userName}는 왕국의 마지막 희망으로 정략혼이라는 굴욕을 받아들였다. 민중은 영웅의 선택에 눈물을 흘렸다.`,
   },
   {
     num: 'III',
@@ -92,7 +92,7 @@ const WORLD_CARDS: WorldCard[] = [
   },
 ]
 
-const TIMELINE: TimelineItem[] = [
+const getTimeline = (userName: string): TimelineItem[] => [
   {
     year: '전쟁 발발',
     event: '임페리얼 제국 vs 그라도니아 왕국 — 대전쟁의 시작',
@@ -111,18 +111,18 @@ const TIMELINE: TimelineItem[] = [
   },
   {
     year: '평화협정',
-    event: '황녀 엘리샤 × {user} — 정략결혼 체결',
-    desc: '협정의 상징으로 두 사람의 혼인이 결정되었다. 엘리샤는 침묵으로, {user}는 결단으로 서명에 응했다.',
+    event: `황녀 엘리샤 × ${userName} — 정략결혼 체결`,
+    desc: `협정의 상징으로 두 사람의 혼인이 결정되었다. 엘리샤는 침묵으로, ${userName}는 결단으로 서명에 응했다.`,
     isBlood: true,
   },
   {
     year: '이야기의 시작',
-    event: '{user}, 임페리얼 황궁에 입성',
+    event: `${userName}, 임페리얼 황궁에 입성`,
     desc: '「종전 후」 2번째 이야기. 증오와 전략, 그리고 예상하지 못한 감정이 뒤엉키는 황궁에서의 새로운 전쟁이 시작된다.',
   },
 ]
 
-const THEMES: ThemeBlock[] = [
+const getThemes = (userName: string): ThemeBlock[] => [
   {
     num: '01',
     title: '혐관 — 증오에서 시작되는 관계',
@@ -141,11 +141,69 @@ const THEMES: ThemeBlock[] = [
   {
     num: '04',
     title: '상처와 이해 — 적의 눈에 비친 나',
-    body: '가까운 벗을 잃은 심정을 알 수 있을까. 패자의 설움을 승자가 알 수 있을까. 서로의 상처를 이해할 수 있을까.서로의 아픔을 오해에서 공감으로 바꿔가는 여정이 핵심이다.',
+    body: `엘리샤의 상처를 ${userName}가(이) 이해할 수 있을까. 패자의 설움을 승자가 알 수 있을까. 서로의 아픔을 오해에서 공감으로 바꿔가는 여정.`,
   },
 ]
 
 // ── 서브 컴포넌트 ─────────────────────
+
+function NameInput({ onSubmit }: { onSubmit: (name: string) => void }) {
+  const [name, setName] = useState('')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (name.trim()) {
+      onSubmit(name.trim())
+    }
+  }
+
+  return (
+    <div className="name-input-overlay">
+      <div className="name-input-container">
+        <div className="name-input-crest">
+          <div className="crest-ring" />
+          <div className="crest-ring" />
+          <div className="crest-ring" />
+        </div>
+        
+        <div className="name-input-content">
+          <div className="ornament-line name-input-ornament"><span>Imperial Chronicles</span></div>
+          <p className="hero-label">쿠니오 — 종전 후 시리즈</p>
+          
+          <h1 className="name-input-title">
+            종전 후 피어난 개망초
+          </h1>
+          
+          <p className="name-input-desc">
+            패배한 조국을 구하기 위해<br />
+            임페리얼 제국과의 정략혼을 받아들인<br />
+            그라도니아의 전쟁 영웅
+          </p>
+
+          <form onSubmit={handleSubmit} className="name-input-form">
+            <label htmlFor="userName">당신의 이름을 입력하세요</label>
+            <input
+              id="userName"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="이름 입력..."
+              autoFocus
+              maxLength={20}
+            />
+            <button type="submit" disabled={!name.trim()}>
+              세계관 속으로 들어가기
+            </button>
+          </form>
+
+          <p className="name-input-hint">
+            입력한 이름이 세계관 전체에 반영됩니다
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function Hero() {
   return (
@@ -158,11 +216,10 @@ function Hero() {
       </div>
 
       <div className="ornament-line"><span>Imperial Chronicles</span></div>
-      <p className="hero-label">쿠니오 — 종전 후 시리즈 II</p>
+      <p className="hero-label">쿠니오 — 종전 후 시리즈</p>
 
       <h1 className="hero-title">
         종전 후 피어난 개망초
-        <span className="accent">After the Last War</span>
       </h1>
 
       <p className="hero-subtitle">
@@ -202,7 +259,7 @@ function NavBar() {
   return (
     <nav>
       <div className="nav-inner">
-        <div className="nav-logo">종전 후 피어난 개망초</div>
+        <div className="nav-logo">종전 후 피어난 개망초 · WIKI</div>
         <ul className="nav-links">
           {links.map((l) => (
             <li key={l.href}><a href={l.href}>{l.label}</a></li>
@@ -213,7 +270,7 @@ function NavBar() {
   )
 }
 
-function Synopsis() {
+function Synopsis({ userName }: { userName: string }) {
   return (
     <section id="synopsis">
       <div className="section-eyebrow">Synopsis</div>
@@ -234,7 +291,7 @@ function Synopsis() {
             단 한 가지를 맹세했다 — <strong>절대로 그에게 마음을 열지 않겠다고.</strong>
           </p>
           <p>
-            패배한 조국의 미래를 짊어진 채 황궁으로 발을 들인 <strong>{'{'+'user}'+'}'}</strong>.
+            패배한 조국의 미래를 짊어진 채 황궁으로 발을 들인 <strong>{userName}</strong>.
             그를 기다리는 것은 얼음보다 차가운 황녀의 시선과, 끝나지 않은 전쟁의 잔상이었다.
           </p>
           <p>
@@ -255,7 +312,7 @@ function Synopsis() {
           <div className="info-card">
             <div className="info-card-label">배경</div>
             <div className="info-card-value">
-              종전 직후의 임페리얼 제국 황궁<br />제국력 N년차, 평화협정 체결 이후
+              종전 직후의 임페리얼 제국 황궁<br />제국력 3년차, 평화협정 체결 이후
             </div>
           </div>
           <div className="info-card">
@@ -327,14 +384,16 @@ function CharCard({ char }: { char: Character }) {
   )
 }
 
-function Characters() {
+function Characters({ userName }: { userName: string }) {
+  const characters = getCharacters(userName)
+  
   return (
     <section id="characters">
       <div className="section-eyebrow">Characters</div>
       <h2 className="section-title"><em>두 사람,</em><br />하나의 전장</h2>
 
       <div className="characters-grid">
-        {CHARACTERS.map((c) => <CharCard key={c.nameEn} char={c} />)}
+        {characters.map((c) => <CharCard key={c.nameEn} char={c} />)}
       </div>
 
       <div className="user-banner">
@@ -344,21 +403,20 @@ function Characters() {
           나를 증오하는 제국의 황녀, 엘리샤 아르델리온.<br />
           그녀와의 결혼은 마치 끝없는 전쟁의 연장선처럼 느껴졌다."
         </div>
-        <div className="user-banner-note">
-          ※ {'{'+'user'+'}'} 는 플레이어 교체 가능 캐릭터입니다. 그라도니아의 전쟁 영웅 역할을 맡은 인물로 설정하세요.
-        </div>
       </div>
     </section>
   )
 }
 
-function World() {
+function World({ userName }: { userName: string }) {
+  const worldCards = getWorldCards(userName)
+  
   return (
     <section id="world">
       <div className="section-eyebrow">World</div>
       <h2 className="section-title">두 나라,<br /><em>하나의 상처</em></h2>
       <div className="world-grid">
-        {WORLD_CARDS.map((w) => (
+        {worldCards.map((w) => (
           <div key={w.num} className="world-card">
             <div className="world-card-num">{w.num}</div>
             <div className="world-card-icon">{w.icon}</div>
@@ -371,13 +429,15 @@ function World() {
   )
 }
 
-function Timeline() {
+function Timeline({ userName }: { userName: string }) {
+  const timeline = getTimeline(userName)
+  
   return (
     <section id="timeline">
       <div className="section-eyebrow">Timeline</div>
       <h2 className="section-title">전쟁이 남긴<br /><em>시간의 흔적</em></h2>
       <div className="timeline">
-        {TIMELINE.map((t) => (
+        {timeline.map((t) => (
           <div key={t.year} className={`tl-item${t.isBlood ? ' blood' : ''}`}>
             <div className="tl-year">{t.year}</div>
             <div className="tl-event">{t.event}</div>
@@ -389,13 +449,15 @@ function Timeline() {
   )
 }
 
-function Themes() {
+function Themes({ userName }: { userName: string }) {
+  const themes = getThemes(userName)
+  
   return (
     <section id="themes">
       <div className="section-eyebrow">Themes</div>
       <h2 className="section-title">이 이야기가<br /><em>말하고자 하는 것</em></h2>
       <div className="themes-wrap">
-        {THEMES.map((t) => (
+        {themes.map((t) => (
           <div key={t.num} className="theme-block" data-num={t.num}>
             <div className="theme-title">{t.title}</div>
             <div className="theme-body">{t.body}</div>
@@ -411,7 +473,7 @@ function Footer() {
     <footer>
       <div className="footer-inner">
         <div className="footer-divider" />
-        <div className="footer-title">종전 후 피어난 개망초 · After the Last War</div>
+        <div className="footer-title">종전 후 피어난 개망초</div>
         <div className="footer-sub">쿠니오 — 종전 후 시리즈 II</div>
         <div className="footer-divider" />
       </div>
@@ -447,18 +509,26 @@ function useFadeInOnScroll(selector: string) {
 
 // ── 루트 컴포넌트 ──────────────────────
 export default function App() {
+  const [userName, setUserName] = useState<string | null>(null)
+  
   useFadeInOnScroll('.world-card, .tl-item, .theme-block, .info-card')
 
+  // 로딩 화면 (이름 입력 전)
+  if (!userName) {
+    return <NameInput onSubmit={setUserName} />
+  }
+
+  // 메인 위키 화면
   return (
     <>
       <Hero />
       <NavBar />
       <main>
-        <Synopsis />
-        <Characters />
-        <World />
-        <Timeline />
-        <Themes />
+        <Synopsis userName={userName} />
+        <Characters userName={userName} />
+        <World userName={userName} />
+        <Timeline userName={userName} />
+        <Themes userName={userName} />
       </main>
       <Footer />
     </>

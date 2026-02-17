@@ -43,6 +43,158 @@
    }
    
    /* ════════════════════════════════
+      NAME INPUT OVERLAY (로딩 화면)
+      ════════════════════════════════ */
+   .name-input-overlay {
+     position: fixed;
+     inset: 0;
+     z-index: 9999;
+     background: var(--ink);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     animation: fadeIn 0.6s ease;
+   }
+   
+   .name-input-container {
+     position: relative;
+     max-width: 600px;
+     width: 90%;
+     padding: 60px 40px;
+     text-align: center;
+   }
+   
+   /* 회전 문장 (배경) */
+   .name-input-crest {
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     width: 500px;
+     height: 500px;
+     opacity: 0.04;
+     pointer-events: none;
+   }
+   
+   .name-input-content {
+     position: relative;
+     z-index: 1;
+   }
+   
+   .name-input-ornament {
+     justify-content: center;
+   }
+   
+   .name-input-title {
+     font-family: 'Cinzel', serif;
+     font-size: clamp(48px, 8vw, 80px);
+     font-weight: 900;
+     letter-spacing: -2px;
+     line-height: 0.9;
+     color: var(--parchment);
+     margin-bottom: 32px;
+     animation: fadeUp 0.8s ease forwards;
+   }
+   
+   .name-input-title .accent {
+     display: block;
+     color: var(--blood);
+     font-style: italic;
+     font-size: 0.4em;
+     letter-spacing: 3px;
+     margin-top: 12px;
+   }
+   
+   .name-input-desc {
+     font-family: 'Cormorant Garamond', serif;
+     font-size: 18px;
+     font-style: italic;
+     line-height: 2;
+     color: var(--mist);
+     margin-bottom: 48px;
+     animation: fadeUp 1s ease forwards 0.2s;
+     opacity: 0;
+   }
+   
+   .name-input-form {
+     display: flex;
+     flex-direction: column;
+     gap: 20px;
+     margin-bottom: 24px;
+     animation: fadeUp 1.2s ease forwards 0.4s;
+     opacity: 0;
+   }
+   
+   .name-input-form label {
+     font-family: 'Cinzel', serif;
+     font-size: 11px;
+     letter-spacing: 5px;
+     color: var(--gold);
+     text-transform: uppercase;
+   }
+   
+   .name-input-form input {
+     padding: 16px 24px;
+     background: #ffffff08;
+     border: 1px solid var(--border-gold);
+     color: var(--parchment);
+     font-family: 'Noto Serif KR', serif;
+     font-size: 18px;
+     text-align: center;
+     outline: none;
+     transition: all 0.3s;
+   }
+   
+   .name-input-form input:focus {
+     background: #ffffff10;
+     border-color: var(--gold);
+     box-shadow: 0 0 20px #c9a84c22;
+   }
+   
+   .name-input-form input::placeholder {
+     color: var(--gold-dim);
+     opacity: 0.5;
+   }
+   
+   .name-input-form button {
+     padding: 14px 32px;
+     background: linear-gradient(135deg, var(--blood), #6a1420);
+     border: 1px solid var(--blood);
+     color: var(--parchment);
+     font-family: 'Cinzel', serif;
+     font-size: 12px;
+     letter-spacing: 4px;
+     text-transform: uppercase;
+     cursor: pointer;
+     transition: all 0.3s;
+   }
+   
+   .name-input-form button:hover:not(:disabled) {
+     background: linear-gradient(135deg, #a02030, var(--blood));
+     box-shadow: 0 0 30px #8b1a2a44;
+     transform: translateY(-2px);
+   }
+   
+   .name-input-form button:disabled {
+     opacity: 0.3;
+     cursor: not-allowed;
+   }
+   
+   .name-input-hint {
+     font-size: 11px;
+     color: var(--gold-dim);
+     font-family: 'Cinzel', serif;
+     letter-spacing: 2px;
+     animation: fadeUp 1.4s ease forwards 0.6s;
+     opacity: 0;
+   }
+   
+   @keyframes fadeIn {
+     from { opacity: 0; }
+     to   { opacity: 1; }
+   }
+   
+   /* ════════════════════════════════
       HERO / HEADER
       ════════════════════════════════ */
    header {
